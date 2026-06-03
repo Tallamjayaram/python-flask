@@ -6,18 +6,19 @@ on:
       - develop
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
+  build-push-deploy:
+    runs-on: self-hosted
 
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set Date Tag
+      - name: Generate Image Tag
         run: |
-          echo "IMAGE_TAG=develop-$(date +'%Y%m%d-%H%M')" >> $GITHUB_ENV
+          IMAGE_TAG=develop-$(date +'%Y%m%d-%H%M')
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
-      - name: Login to DockerHub
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -25,8 +26,17 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t jayaramtallam/python-flask/app:${IMAGE_TAG} .
+          docker build -t jayaramtallam/python-flask:${IMAGE_TAG} .
 
       - name: Push Docker Image
         run: |
-          docker push jayaramtallam/python-flask/app:${IMAGE_TAG}
+          docker push jayaramtallam/python-flask:${IMAGE_TAG}
+
+      - name: Update Minikube Deployment
+        run: |
+          kubectl set image deployment/python-flask \
+          python-flask=jayaramtallam/python-flask:${IMAGE_TAG}
+
+      - name: Verify Rollout
+        run: |
+          kubectl rollout status deployment/python-flask
