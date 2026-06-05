@@ -32,11 +32,3 @@ jobs:
         run: |
           docker push jayaramtallam/python-flask:${IMAGE_TAG}
 
-      - name: Update Minikube Deployment
-        run: |
-          kubectl set image deployment/python-flask \
-          python-flask=jayaramtallam/python-flask:${IMAGE_TAG}
-
-      - name: Verify Rollout
-        run: |
-          kubectl rollout status deployment/python-flask
