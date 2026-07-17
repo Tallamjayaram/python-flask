@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: python-flask
-        image: jayaramtallam/python-flask:latest
+        image: jayaramtallam/python-flask:develop-20260717-0631
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
