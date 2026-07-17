@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/hello', methods=['GET'])
 def helloworld():
 	if(request.method == 'GET'):
-		data = {"data": "Hello World,welcome to the world!"}
+		data = {"data": "Hello World,welcome to Ram's world!"}
 		return jsonify(data)
 
 
